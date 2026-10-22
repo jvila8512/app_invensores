@@ -1,12 +1,30 @@
 // lib/config/constants/environment.dart
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+/// Configuracion leida desde `.env`.
+///
+/// El `.env` es gitignored, por lo que todos los valores tienen un fallback
+/// sensato: la app debe arrancar aunque el archivo no exista (tests included).
 class Environment {
-  static String get theMovieDbKey {
-    final key = dotenv.env['THE_MOVIEDB_KEY'];
-    if (key == null || key.isEmpty) {
-      throw Exception('THE_MOVIEDB_KEY no está configurada en .env');
+  const Environment._();
+
+  static const String defaultApiBaseUrl = 'http://localhost:8080';
+
+  /// Base URL del backend ETECSA (`http://host:8080`, sin context-path).
+  static String get apiBaseUrl {
+    final value = _read('API_BASE_URL');
+    return value.isEmpty ? defaultApiBaseUrl : value;
+  }
+
+  /// Cuando es `true` la app usa las datasources fake y no hace red.
+  static bool get useFakeData => _read('USE_FAKE_DATA').toLowerCase() == 'true';
+
+  static String _read(String key) {
+    try {
+      return dotenv.env[key] ?? '';
+    } catch (_) {
+      // `dotenv` no fue cargado: no hay valor de entorno.
+      return '';
     }
-    return key;
   }
 }
