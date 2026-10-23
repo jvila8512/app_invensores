@@ -1,0 +1,8 @@
+# Configuracion de la suite de tests.
+#
+# El tag `probe` queda fuera de la suite por defecto: el probe de WebSocket
+# necesita un backend vivo y un JWT real.
+# Para ejecutarlo: flutter test test/probe/ws_probe_test.dart --tags probe --run-skipped
+tags:
+  probe:
+    skip: "Requiere un backend vivo y un JWT real (usar --run-skipped para forzarlo)."
