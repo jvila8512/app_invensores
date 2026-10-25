@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 /// dashboard (WU7).
 class PlaceholderScreen extends StatelessWidget {
   static const String name = 'placeholder-screen';
+  static const String path = '/';
 
   const PlaceholderScreen({super.key});
 

@@ -11,9 +11,16 @@ class Environment {
   static const String defaultApiBaseUrl = 'http://localhost:8080';
 
   /// Base URL del backend ETECSA (`http://host:8080`, sin context-path).
+  ///
+  /// Se acepta tanto `API_BASE_URL` como `API_URL` para no romper un `.env`
+  /// escrito con el nombre anterior.
   static String get apiBaseUrl {
     final value = _read('API_BASE_URL');
-    return value.isEmpty ? defaultApiBaseUrl : value;
+    if (value.isNotEmpty) return value;
+    return switch (_read('API_URL')) {
+      '' => defaultApiBaseUrl,
+      final url => url.endsWith('/') ? url.substring(0, url.length - 1) : url,
+    };
   }
 
   /// Cuando es `true` la app usa las datasources fake y no hace red.
