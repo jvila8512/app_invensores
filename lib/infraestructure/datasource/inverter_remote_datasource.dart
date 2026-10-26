@@ -27,7 +27,7 @@ class InverterRemoteDatasource implements InverterDatasource {
 
   @override
   Future<List<Inversor>> fetchAll() async {
-    final response = await _dio.get<List<dynamic>>('/api/inversores/all');
+    final response = await _dio.get<List<dynamic>>('/api/inversors/all');
     return [
       for (final json in _jsonList(response)) InversorMapper.fromJson(json),
     ];

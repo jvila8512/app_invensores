@@ -70,7 +70,7 @@ void main() {
     final adapter = _FakeAdapter();
     final dio = _buildDio(holder: holder, storage: storage, adapter: adapter);
 
-    await dio.get<void>('/api/inversores/all');
+    await dio.get<void>('/api/inversors/all');
 
     expect(adapter.authorizationHeaders, hasLength(1));
     expect(adapter.authorizationHeaders.single, 'Bearer jwt-123');
@@ -80,7 +80,7 @@ void main() {
     final adapter = _FakeAdapter();
     final dio = _buildDio(holder: holder, storage: storage, adapter: adapter);
 
-    await dio.get<void>('/api/inversores/all');
+    await dio.get<void>('/api/inversors/all');
 
     expect(adapter.authorizationHeaders.single, isNull);
   });
@@ -103,12 +103,12 @@ void main() {
       throwsA(isA<DioException>()),
     );
 
-    expect(holder.hasToken, isFalse, reason: 'el token en memoria se limpió');
-    expect(await storage.read(), isNull, reason: 'el token guardado se borró');
-    expect(notified, isTrue, reason: 'la sesión expirada se propagó');
+    expect(holder.hasToken, isFalse, reason: 'el token en memoria se limpiÃ³');
+    expect(await storage.read(), isNull, reason: 'el token guardado se borrÃ³');
+    expect(notified, isTrue, reason: 'la sesiÃ³n expirada se propagÃ³');
   });
 
-  test('un error que no es 401 no cierra la sesión', () async {
+  test('un error que no es 401 no cierra la sesiÃ³n', () async {
     holder.set('jwt-123');
     await storage.write('jwt-123');
 

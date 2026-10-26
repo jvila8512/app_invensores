@@ -10,7 +10,7 @@ import 'package:etecsa_supervision/domain/entities/lectura_inversor.dart';
 /// la fake sirve la demo sin red. Ambas devuelven entidades de dominio:
 /// ningun DTO cruza esta frontera.
 abstract class InverterDatasource {
-  /// `GET /api/inversores/all` (sin paginar).
+  /// `GET /api/inversors/all` (sin paginar).
   Future<List<Inversor>> fetchAll();
 
   /// `GET /api/dato-inversors/latest-readings`: una lectura por inversor.

@@ -6,7 +6,7 @@ import 'package:etecsa_supervision/infraestructure/model/marca_dto.dart';
 import 'package:etecsa_supervision/infraestructure/model/modelo_inversor_dto.dart';
 import 'package:etecsa_supervision/infraestructure/model/sitio_dto.dart';
 
-/// `InversorDTO` del backend (`GET /api/inversores/all`, sin paginar).
+/// `InversorDTO` del backend (`GET /api/inversors/all`, sin paginar).
 ///
 /// `tipoConexion` y `estadoDispositivo` llegan como texto (nombres de los
 /// enums Java) y se guardan como `String?`: en Dart no hay enum.
