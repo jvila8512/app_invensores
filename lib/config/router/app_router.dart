@@ -11,8 +11,8 @@ import 'package:go_router/go_router.dart';
 /// construir [GoRouter] ni un contexto de widget.
 ///
 /// - Mientras la sesión restaura el token guardado no se redirige nada.
-/// - Sin sesión sólo se permite el login; cualquier otra ruta cae a él.
-/// - Con sesión, el login redirige al inicio (el dashboard de WU7).
+/// - Sin sesión sólo se permiten login y registro; cualquier otra ruta cae al login.
+/// - Con sesión, el login o el registro redirigen al inicio (el dashboard de WU7).
 String? authRedirect({
   required bool isRestoring,
   required bool isAuthenticated,
@@ -20,9 +20,9 @@ String? authRedirect({
 }) {
   if (isRestoring) return null;
 
-  final onLogin = location == LoginScreen.path;
-  if (!isAuthenticated && !onLogin) return LoginScreen.path;
-  if (isAuthenticated && onLogin) return PlaceholderScreen.path;
+  final onAuth = location == LoginScreen.path || location == RegisterScreen.path;
+  if (!isAuthenticated && !onAuth) return LoginScreen.path;
+  if (isAuthenticated && onAuth) return PlaceholderScreen.path;
   return null;
 }
 
@@ -43,6 +43,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: LoginScreen.path,
         name: LoginScreen.name,
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: RegisterScreen.path,
+        name: RegisterScreen.name,
+        builder: (context, state) => const RegisterScreen(),
       ),
     ],
     redirect: (context, state) => authRedirect(

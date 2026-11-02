@@ -46,6 +46,28 @@ void main() {
       );
     });
 
+    test('sin sesión, el registro permanece en el registro', () {
+      expect(
+        authRedirect(
+          isRestoring: false,
+          isAuthenticated: false,
+          location: RegisterScreen.path,
+        ),
+        isNull,
+      );
+    });
+
+    test('con sesión, el registro redirige al inicio', () {
+      expect(
+        authRedirect(
+          isRestoring: false,
+          isAuthenticated: true,
+          location: RegisterScreen.path,
+        ),
+        home,
+      );
+    });
+
     test('con sesión, el login redirige al inicio', () {
       expect(
         authRedirect(isRestoring: false, isAuthenticated: true, location: login),

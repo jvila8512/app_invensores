@@ -132,6 +132,51 @@ class AuthSessionNotifier extends AsyncNotifier<AuthSession> {
     state = const AsyncData<AuthSession>(AuthSession.unauthenticated());
   }
 
+  /// Registra una nueva cuenta.
+  ///
+  /// Reusa el flujo de autenticación del backend (endpoint `/api/authenticate`)
+  /// y, en modo fake, la sesión se abre con cualquier usuario/contraseña.
+  /// El `email` se valida localmente; el backend actual no expone un endpoint
+  /// de registro separado, por lo que se autentica con usuario y contraseña.
+  Future<AuthSession> register({
+    required String username,
+    required String email,
+    required String password,
+  }) async {
+    if (username.trim().isEmpty) {
+      throw const AuthException('Ingresá el usuario');
+    }
+    if (email.trim().isEmpty || !email.contains('@')) {
+      throw const AuthException('Ingresá un correo válido');
+    }
+    if (password.isEmpty) {
+      throw const AuthException('Ingresá la contraseña');
+    }
+
+    final repository = ref.read(authRepositoryProvider);
+    final holder = ref.read(tokenHolderProvider);
+    final storage = ref.read(tokenStorageProvider);
+
+    final token = await repository.authenticate(
+      username: username.trim(),
+      password: password,
+    );
+
+    holder.set(token);
+    await storage.write(token);
+
+    try {
+      final account = await repository.fetchAccount();
+      final session = AuthSession.authenticated(token: token, account: account);
+      state = AsyncData<AuthSession>(session);
+      return session;
+    } catch (error) {
+      holder.clear();
+      await storage.delete();
+      rethrow;
+    }
+  }
+
   /// Reaccion al 401 emitido por el interceptor.
   ///
   /// Se difiere un microtask porque el 401 puede llegar mientras el propio
