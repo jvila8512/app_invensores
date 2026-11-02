@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   const login = LoginScreen.path;
-  const home = PlaceholderScreen.path;
+  const home = DashboardScreen.path;
 
   group('authRedirect', () {
     test('durante la restauración no redirige nada', () {

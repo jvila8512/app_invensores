@@ -22,7 +22,7 @@ String? authRedirect({
 
   final onAuth = location == LoginScreen.path || location == RegisterScreen.path;
   if (!isAuthenticated && !onAuth) return LoginScreen.path;
-  if (isAuthenticated && onAuth) return PlaceholderScreen.path;
+  if (isAuthenticated && onAuth) return DashboardScreen.path;
   return null;
 }
 
@@ -32,12 +32,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   final session = ref.watch(authSessionProvider);
 
   return GoRouter(
-    initialLocation: PlaceholderScreen.path,
+    initialLocation: DashboardScreen.path,
     routes: [
       GoRoute(
-        path: PlaceholderScreen.path,
-        name: PlaceholderScreen.name,
-        builder: (context, state) => const PlaceholderScreen(),
+        path: DashboardScreen.path,
+        name: DashboardScreen.name,
+        builder: (context, state) => const DashboardScreen(),
       ),
       GoRoute(
         path: LoginScreen.path,
