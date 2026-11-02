@@ -9,6 +9,7 @@ import 'package:etecsa_supervision/domain/entities/lectura_inversor.dart';
 import 'package:etecsa_supervision/infraestructure/mapper/inversor_mapper.dart';
 import 'package:etecsa_supervision/infraestructure/mapper/lectura_inversor_mapper.dart';
 import 'package:etecsa_supervision/infraestructure/polling/periodic_poller.dart';
+import 'package:etecsa_supervision/infraestructure/telemetry/live_telemetry_client.dart';
 
 /// Implementacion real del contrato de datos contra el backend (design D3).
 ///
@@ -18,12 +19,22 @@ class InverterRemoteDatasource implements InverterDatasource {
   InverterRemoteDatasource(
     this._dio, {
     this.livePollInterval = const Duration(seconds: 5),
-  });
+    LiveTelemetryClient? telemetryClient,
+  }) : _telemetryClient = telemetryClient;
 
   final Dio _dio;
 
   /// Cadencia del fallback REST de [watchLive] (design D1).
   final Duration livePollInterval;
+
+  /// Cliente de telemetria STOMP (WU6). Cuando esta disponible y conectado,
+  /// [watchLive] lo usa en lugar del sondeo REST.
+  LiveTelemetryClient? _telemetryClient;
+
+  /// Inyecta (o reemplaza) el cliente de telemetria STOMP.
+  void setTelemetryClient(LiveTelemetryClient client) {
+    _telemetryClient = client;
+  }
 
   @override
   Future<List<Inversor>> fetchAll() async {
@@ -65,9 +76,16 @@ class InverterRemoteDatasource implements InverterDatasource {
 
   /// Fallback REST del detalle (design D1): sondea la ultima fila del
   /// historial cada [livePollInterval]. WU6 sustituye este camino por STOMP
-  /// cuando el probe de transporte lo valide.
+  /// cuando el cliente de telemetria esta disponible y conectado.
   @override
   Stream<LecturaInversor> watchLive(int inversorId) {
+    final client = _telemetryClient;
+    if (client != null && client.isConnected) {
+      return client.subscribe(inversorId, (reading) {
+        // La emision se realiza por el stream devuelto por [LiveTelemetryClient.subscribe].
+      });
+    }
+
     final controller = StreamController<LecturaInversor>();
     late final PeriodicPoller poller;
 
