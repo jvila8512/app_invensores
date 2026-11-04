@@ -20,9 +20,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 ///   NORMAL para una unidad sin datos.
 /// - `SLAVE n` para esclavos, `MASTER` para el maestro.
 class InverterCard extends ConsumerWidget {
-  const InverterCard({super.key, required this.inversor});
+  const InverterCard({super.key, required this.inversor, this.onTap});
 
   final Inversor inversor;
+
+  /// Abre el detalle del inversor (null en tests sin router).
+  final VoidCallback? onTap;
 
   static const StalenessPolicy _policy = StalenessPolicy();
 
@@ -55,8 +58,10 @@ class InverterCard extends ConsumerWidget {
       key: Key('inverter-card-${inversor.id}'),
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       clipBehavior: Clip.antiAlias,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(10),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -151,6 +156,7 @@ class InverterCard extends ConsumerWidget {
             const SizedBox(width: 12),
             SocRing(socPct: reading?.socPct),
           ],
+        ),
         ),
       ),
     );

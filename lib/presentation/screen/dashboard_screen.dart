@@ -5,12 +5,14 @@ import 'package:etecsa_supervision/domain/policy/site_grouping.dart';
 import 'package:etecsa_supervision/presentation/provider/auth_session_provider.dart';
 import 'package:etecsa_supervision/presentation/provider/catalog_provider.dart';
 import 'package:etecsa_supervision/presentation/provider/selected_site_provider.dart';
+import 'package:etecsa_supervision/presentation/screen/inversor_detail_screen.dart';
 import 'package:etecsa_supervision/presentation/widget/dashboard/fleet_kpis.dart';
 import 'package:etecsa_supervision/presentation/widget/dashboard/inverter_card.dart';
 import 'package:etecsa_supervision/presentation/widget/dashboard/site_filter_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 /// Dashboard: lista plana de TODOS los inversores agrupados visualmente por
 /// sitio, con filtro pegajoso (spec §2, §3).
@@ -86,8 +88,18 @@ class _DashboardBody extends ConsumerWidget {
                 SliverFixedExtentList(
                   itemExtent: 168,
                   delegate: SliverChildBuilderDelegate(
-                    (context, index) =>
-                        InverterCard(inversor: entry.value[index]),
+                    (context, index) {
+                      final inversor = entry.value[index];
+                      final id = inversor.id;
+                      return InverterCard(
+                        inversor: inversor,
+                        onTap: id == null
+                            ? null
+                            : () => context.go(
+                                  InversorDetailScreen.pathFor(id),
+                                ),
+                      );
+                    },
                     childCount: entry.value.length,
                   ),
                 ),

@@ -40,6 +40,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const DashboardScreen(),
       ),
       GoRoute(
+        path: InversorDetailScreen.path,
+        name: InversorDetailScreen.name,
+        builder: (context, state) => InversorDetailScreen(
+          inversorId: int.tryParse(state.pathParameters['id'] ?? '') ?? 0,
+        ),
+      ),
+      GoRoute(
         path: LoginScreen.path,
         name: LoginScreen.name,
         builder: (context, state) => const LoginScreen(),

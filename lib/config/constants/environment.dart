@@ -26,6 +26,19 @@ class Environment {
   /// Cuando es `true` la app usa las datasources fake y no hace red.
   static bool get useFakeData => _read('USE_FAKE_DATA').toLowerCase() == 'true';
 
+  /// Endpoint STOMP/WebSocket derivado de [apiBaseUrl].
+  ///
+  /// Misma maquina y puerto que la API, esquema `ws`/`wss` y el prefijo que
+  /// expone Spring (`/websocket/tracker/websocket`), verificado por el probe
+  /// de WU6.
+  static String get wsBaseUrl {
+    final base = apiBaseUrl;
+    final secure = base.startsWith('https://');
+    final host = base.replaceFirst(RegExp('^https?://'), '');
+    final scheme = secure ? 'wss' : 'ws';
+    return '$scheme://$host/websocket/tracker/websocket';
+  }
+
   static String _read(String key) {
     try {
       return dotenv.env[key] ?? '';
